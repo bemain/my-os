@@ -36,7 +36,7 @@ The contents of [`root_files/`](/root_files/) is copied into the image.
 
 ### build.yml
 
-This workflow creates custom OCI image and publishes it to the quay.io container registry. Any image metadata is set here, including the name which by default is the same as the repo name.
+This workflow creates custom OCI image and publishes it to the GitHub Container Registry (GHCR). Any image metadata is set here, including the name which by default is the same as the repo name.
 
 ### Container Signing
 
