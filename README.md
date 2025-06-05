@@ -9,13 +9,13 @@ A GitHub workflow builds a new version of the container image every night and on
 Start from a working installation of Silverblue (or similar distro that has bootc). Rebasing to this repo is done in two steps. The first step installs the image without verifying signatures, because those signatures would not be trusted. The second step enables image signature verification.
 
 ```bash
-bootc switch ghcr.io/bemain/atomic-test:latest
+bootc switch ghcr.io/bemain/my-os:latest
 ```
 
 Reboot
 
 ```bash
-bootc switch ghcr.io/bemain/atomic-test:latest --enforce-container-sigpolicy
+bootc switch ghcr.io/bemain/my-os:latest --enforce-container-sigpolicy
 ```
 
 # Understanding the repo
@@ -30,7 +30,7 @@ This bash script is run by the containerfile as part of the build process and do
 
 ## build_files/root_files
 
-The contents of [`root_files/`](/root_files/) is copied into the image.
+The contents of [`root_files/`](/build_files/root_files/) is copied into the image.
 
 ## GitHub Actions Workflow
 
