@@ -1,6 +1,6 @@
 # bemain's bootc image
 
-This repository builds a bootc compatible container image tailored to my own preferences. It's based on the [image-temlate repo](https://github.com/ublue-os/image-template) by the Universal Blue Project.
+This repository builds a bootc compatible container image tailored to my own preferences. It's based on the [image-template repo](https://github.com/ublue-os/image-template) by the Universal Blue Project.
 
 A GitHub workflow builds a new version of the container image every night and on changes to the repo. The image is signed with a private key and pushed to the GitHub Container Registry.
 

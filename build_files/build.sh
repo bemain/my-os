@@ -8,14 +8,12 @@ mkdir /var/opt /var/roothome
 
 # Installs packages from fedora repos
 dnf5 install -y \
-	tmux \
 	NetworkManager-l2tp-gnome \
 	distrobox \
 	wireguard-tools \
 	zsh \
 	papirus-icon-theme \
-	snapper \
-	gnome-tweaks
+	snapper
 
 dnf5 remove -y toolbox
 
