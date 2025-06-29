@@ -6,7 +6,7 @@ mkdir /var/opt /var/roothome
 
 ### Install packages
 
-# Installs packages from fedora repos
+# Install packages from fedora repos
 dnf5 install -y \
 	NetworkManager-l2tp-gnome \
 	distrobox \
@@ -15,7 +15,10 @@ dnf5 install -y \
 	papirus-icon-theme \
 	snapper
 
-dnf5 remove -y toolbox
+# Remove packages I don't use
+dnf5 remove -y \
+    toolbox \
+    firefox  # Prefer the Flatpak version
 
 cp /ctx/cosign.pub /etc/pki/containers/bemain-cosign.pub
 rsync -r /ctx/root_files/ /
