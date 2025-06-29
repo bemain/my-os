@@ -17,7 +17,7 @@ dnf5 install -y \
 
 dnf5 remove -y toolbox
 
-cp /ctx/cosign.pub /etc/pki/bemain-cosign.pub
+cp /ctx/cosign.pub /etc/pki/containers/bemain-cosign.pub
 rsync -r /ctx/root_files/ /
 
 rm -rf /var/roothome/
