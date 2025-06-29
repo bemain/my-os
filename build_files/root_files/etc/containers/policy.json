@@ -9,7 +9,7 @@
             "ghcr.io/bemain/my-os": [
                 {
                     "type": "sigstoreSigned",
-                    "keyPath": "/etc/pki/containers/bemain-cosign.pub",
+                    "keyPath": "/etc/pki/bemain-cosign.pub",
                     "signedIdentity": {
                         "type": "matchRepository"
                     }
