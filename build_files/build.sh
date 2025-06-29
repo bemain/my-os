@@ -20,7 +20,8 @@ dnf5 remove -y \
     toolbox \
     firefox  # Prefer the Flatpak version
 
-cp /ctx/cosign.pub /etc/pki/containers/bemain-cosign.pub
-rsync -r /ctx/root_files/ /
+
+cp /ctx/cosign.pub /etc/pki/bemain-cosign.pub  # Copy signing key
+rsync -r /ctx/root_files/ /  # Copy root files
 
 rm -rf /var/roothome/
