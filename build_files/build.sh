@@ -13,7 +13,8 @@ dnf5 install -y \
 	wireguard-tools \
 	zsh \
 	papirus-icon-theme \
-	snapper
+	snapper \
+	gparted
 
 # Remove packages I don't use
 dnf5 remove -y \
