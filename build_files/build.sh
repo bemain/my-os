@@ -14,7 +14,8 @@ dnf5 install -y \
 	zsh \
 	papirus-icon-theme \
 	snapper \
-	gparted
+	gparted \
+	waydroid
 
 # Remove packages I don't use
 dnf5 remove -y \
