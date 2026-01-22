@@ -4,9 +4,7 @@ set -ouex pipefail
 
 mkdir /var/opt /var/roothome
 
-### Install packages
-
-# Install packages from fedora repos
+# Install packages I want
 dnf5 install -y \
 	NetworkManager-l2tp-gnome \
 	distrobox \
