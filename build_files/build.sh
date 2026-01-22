@@ -11,7 +11,7 @@ dnf5 install -y \
 	wireguard-tools \
 	zsh \
 	papirus-icon-theme \
-	snapper \
+	btrbk \
 	gparted \
 	waydroid
 
