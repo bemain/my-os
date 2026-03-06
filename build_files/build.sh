@@ -7,6 +7,7 @@ mkdir /var/opt /var/roothome
 # Install packages I want
 dnf5 install -y \
 	NetworkManager-l2tp-gnome \
+	krb5-workstation \
 	distrobox \
 	wireguard-tools \
 	zsh \
