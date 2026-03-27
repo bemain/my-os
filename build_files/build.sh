@@ -14,8 +14,7 @@ dnf5 install -y \
 	papirus-icon-theme \
 	btrbk \
 	gparted \
-	waydroid \
-	clevis-dracut clevis-udisks2
+	waydroid 
 
 # Remove packages I don't use
 dnf5 remove -y \
