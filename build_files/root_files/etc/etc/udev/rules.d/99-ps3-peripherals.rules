@@ -1,0 +1,2 @@
+# cellUsbd devices, such as guitars etc.
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", MODE="0666"
