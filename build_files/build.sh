@@ -14,7 +14,8 @@ dnf5 install -y \
 	papirus-icon-theme \
 	btrbk \
 	gparted \
-	waydroid 
+	waydroid \
+	https://repository.mullvad.net/rpm/stable/x86_64/MullvadVPN-2026.1_x86_64.rpm
 
 # Remove packages I don't use
 dnf5 remove -y \
