@@ -4,6 +4,9 @@ set -ouex pipefail
 
 mkdir /var/opt /var/roothome
 
+# Add Mullvad VPN repo
+sudo dnf5 config-manager addrepo --from-repofile=https://repository.mullvad.net/rpm/stable/mullvad.repo
+
 # Install packages I want
 dnf5 install -y \
 	NetworkManager-l2tp-gnome \
@@ -15,7 +18,7 @@ dnf5 install -y \
 	btrbk \
 	gparted \
 	waydroid \
-	https://repository.mullvad.net/rpm/stable/x86_64/MullvadVPN-2026.1_x86_64.rpm
+	mullvad-vpn
 
 # Remove packages I don't use
 dnf5 remove -y \
