@@ -5,7 +5,7 @@ set -ouex pipefail
 mkdir /var/opt /var/roothome
 
 # Add Mullvad VPN repo
-sudo dnf5 config-manager addrepo --from-repofile=https://repository.mullvad.net/rpm/stable/mullvad.repo
+dnf5 config-manager addrepo --from-repofile=https://repository.mullvad.net/rpm/stable/mullvad.repo
 
 # Install packages I want
 dnf5 install -y \
@@ -19,6 +19,12 @@ dnf5 install -y \
 	gparted \
 	waydroid \
 	mullvad-vpn
+
+# Mullvad VPN is installed in /opt which does not persist to the final image, so we move it
+mkdir -p /usr/lib/mullvad
+mv "/opt/Mullvad VPN"/* /usr/lib/mullvad/
+rm -rf "/opt/Mullvad VPN"
+ln -sf /usr/lib/mullvad "/opt/Mullvad VPN"
 
 # Remove packages I don't use
 dnf5 remove -y \
