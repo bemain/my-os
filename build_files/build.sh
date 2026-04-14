@@ -23,8 +23,6 @@ dnf5 install -y \
 # Mullvad VPN is installed in /opt which does not persist to the final image, so we move it
 mkdir -p /usr/lib/mullvad
 mv "/opt/Mullvad VPN"/* /usr/lib/mullvad/
-rm -rf "/opt/Mullvad VPN"
-ln -sf /usr/lib/mullvad "/opt/Mullvad VPN"
 
 # Remove packages I don't use
 dnf5 remove -y \
