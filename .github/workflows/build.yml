@@ -5,16 +5,16 @@ on:
     branches:
       - main
   schedule:
-    - cron: '30 04 * * *'  # 04:30 UTC everyday
+    - cron: "30 04 * * *" # 04:30 UTC everyday
   push:
     branches:
       - main
     paths-ignore:
-      - '**/README.md'
+      - "**/README.md"
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: "${{ github.event.repository.name }}"  # the name of the image produced by this build, matches repo names
+  IMAGE_NAME: "${{ github.event.repository.name }}" # the name of the image produced by this build, matches repo names
   IMAGE_DESC: "My customized Fedora Silverblue image"
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"
   ARTIFACTHUB_LOGO_URL: "https://avatars.githubusercontent.com/u/45990342?v=4" 
@@ -42,7 +42,7 @@ jobs:
       #   uses: ublue-os/remove-unwanted-software@517622d6452028f266b7ba4cc9a123b5f58a6b53 # v7
       #   with:
       #     remove-codeql: true
-      
+
       - name: Get current date
         id: date
         run: |
@@ -166,8 +166,10 @@ jobs:
       # using Cosign and save the private key as a repository secret in Github for this workflow
       # to consume. For more details, review the image signing section of the README.
       - name: Install Cosign
-        uses: sigstore/cosign-installer@v3.9.1
+        uses: sigstore/cosign-installer@v4.1.1
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        with:
+          cosign-release: "v2.6.1"
 
       - name: Sign container image
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
