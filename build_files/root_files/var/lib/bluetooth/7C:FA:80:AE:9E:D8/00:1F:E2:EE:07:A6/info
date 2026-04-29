@@ -1,0 +1,21 @@
+[General]
+Name=Wireless Controller
+Alias=PS4 Controller (Black)
+Class=0x002508
+SupportedTechnologies=BR/EDR;
+Trusted=true
+Blocked=false
+CablePairing=false
+WakeAllowed=true
+Services=00001124-0000-1000-8000-00805f9b34fb;00001200-0000-1000-8000-00805f9b34fb;
+
+[DeviceID]
+Source=2
+Vendor=1356
+Product=2508
+Version=256
+
+[LinkKey]
+Key=96FD7AA422725115FF413EB450340074
+Type=4
+PINLength=0
