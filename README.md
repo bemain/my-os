@@ -1,4 +1,5 @@
 # bemain's bootc image
+[![Build Custom Image](https://github.com/bemain/my-os/actions/workflows/build.yml/badge.svg)](https://github.com/bemain/my-os/actions/workflows/build.yml)
 
 This repository builds a bootc compatible container image tailored to my own preferences. It's based on the [image-template repo](https://github.com/ublue-os/image-template) by the Universal Blue Project.
 
