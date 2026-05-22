@@ -21,7 +21,7 @@ env:
   DEFAULT_TAG: "latest" 
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -46,12 +46,7 @@ jobs:
 
       # This is optional, but if you see that your builds are way too big for the runners, you can enable this by uncommenting the following lines:
       # - name: Maximize build space
-      #   uses: ublue-os/remove-unwanted-software@517622d6452028f266b7ba4cc9a123b5f58a6b53 # v7
-      #   with:
-      #     remove-codeql: true
-
-      - name: Maximize build space
-        uses: ublue-os/remove-unwanted-software@v9
+      #   uses: ublue-os/remove-unwanted-software@v9
 
       - name: Get current date
         id: date
@@ -111,25 +106,25 @@ jobs:
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
       # This does not make your image faster to download, just provides better resumability and fixes a few errors.
       # Documentation for Rechunk is provided on their github repository at https://github.com/hhd-dev/rechunk
-      - name: Run Rechunker
-        id: rechunk
-        uses: ublue-os/legacy-rechunk@v1.0.0
-        with:
-          rechunk: 'ghcr.io/ublue-os/legacy-rechunk:v1.0.0-x86_64'
-          ref: "localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
-          prev-ref: "${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
-          skip_compression: true
-          version: ${{ env.CENTOS_VERSION }}
-          labels: ${{ steps.metadata.outputs.labels }} # Rechunk strips out all the labels during build, this needs to be reapplied here with newline separator
+      # - name: Run Rechunker
+      #   id: rechunk
+      #   uses: hhd-dev/rechunk@v1.2.4
+      #   with:
+      #     rechunk: 'ghcr.io/hhd-dev/rechunk:v1.2.4'
+      #     ref: "localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+      #     prev-ref: "${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+      #     skip_compression: true
+      #     version: ${{ env.CENTOS_VERSION }}
+      #     labels: ${{ steps.metadata.outputs.labels }} # Rechunk strips out all the labels during build, this needs to be reapplied here with newline separator
 
       # This is necessary so that the podman socket can find the rechunked image on its storage
-      - name: Load in podman and tag
-        run: |
-          IMAGE=$(podman pull ${{ steps.rechunk.outputs.ref }})
-          sudo rm -rf ${{ steps.rechunk.outputs.output }}
-          for tag in ${{ steps.metadata.outputs.tags }}; do
-            podman tag $IMAGE ${{ env.IMAGE_NAME }}:$tag
-          done
+      # - name: Load in podman and tag
+      #   run: |
+      #     IMAGE=$(podman pull ${{ steps.rechunk.outputs.ref }})
+      #     sudo rm -rf ${{ steps.rechunk.outputs.output }}
+      #     for tag in ${{ steps.metadata.outputs.tags }}; do
+      #       podman tag $IMAGE ${{ env.IMAGE_NAME }}:$tag
+      #     done
 
       # These `if` statements are so that pull requests for your custom images do not make it publish any packages under your name without you knowing
       # They also check if the runner is on the default branch so that things like the merge queue (if you enable it), are going to work
