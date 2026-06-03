@@ -4,7 +4,7 @@ COPY build_files /
 COPY cosign.pub /cosign.pub
 
 # Base Image
-FROM registry.fedoraproject.org/fedora-silverblue
+FROM registry.fedoraproject.org/fedora-silverblue:latest
 
 ## Other possible base images include:
 # FROM ghcr.io/ublue-os/bazzite:latest
@@ -29,3 +29,5 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
 ### LINTING
 ## Verify final image and contents are correct.
 RUN bootc container lint
+
+LABEL quay.expires-after=30d

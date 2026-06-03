@@ -6,7 +6,7 @@
     ],
     "transports": {
         "docker": {
-            "ghcr.io/bemain/my-os": [
+            "quay.io/bemain/my-os": [
                 {
                     "type": "sigstoreSigned",
                     "keyPath": "/etc/pki/bemain-cosign.pub",

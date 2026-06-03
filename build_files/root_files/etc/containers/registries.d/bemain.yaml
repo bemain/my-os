@@ -1,4 +1,4 @@
 docker:
-  ghcr.io/bemain/my-os:
+  quay.io/bemain/my-os:
     use-sigstore-attachments: true
 
