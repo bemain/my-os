@@ -12,6 +12,7 @@ dnf5 install -y \
 	NetworkManager-l2tp-gnome \
 	btrbk \
 	distrobox \
+	fwupd \
 	gparted \
 	krb5-workstation \
 	mullvad-vpn \
