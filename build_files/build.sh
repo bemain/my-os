@@ -17,8 +17,10 @@ dnf5 install -y \
 	krb5-workstation \
 	mullvad-vpn \
 	papirus-icon-theme \
+	rclone \
 	waydroid \
 	wireguard-tools \
+	yq \
 	zsh
 
 # Mullvad VPN is installed in /opt which does not persist to the final image, so we move it
