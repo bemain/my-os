@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Rechunking holds the image twice in container storage, which exceeds the runner's default free space
       - name: Maximize build space
