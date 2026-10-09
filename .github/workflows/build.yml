@@ -38,9 +38,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      # This is optional, but if you see that your builds are way too big for the runners, you can enable this by uncommenting the following lines:
-      # - name: Maximize build space
-      #   uses: ublue-os/remove-unwanted-software@v9
+      # Rechunking holds the image twice in container storage, which exceeds the runner's default free space
+      - name: Maximize build space
+        uses: ublue-os/remove-unwanted-software@v9
 
       - name: Get current date
         id: date
@@ -76,7 +76,7 @@ jobs:
             org.opencontainers.image.vendor=${{ github.repository_owner }}
             org.opencontainers.image.version=latest
             io.artifacthub.package.deprecated=false
-            io.artifacthub.package.keywords=bootc,ublue,universal-blue
+            io.artifacthub.package.keywords=bootc,fedora,silverblue
             io.artifacthub.package.license=Apache-2.0
             io.artifacthub.package.logo-url=${{ env.ARTIFACTHUB_LOGO_URL }}
             io.artifacthub.package.prerelease=false
@@ -97,32 +97,46 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels }}
           oci: false
 
-      # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
-      # This does not make your image faster to download, just provides better resumability and fixes a few errors.
-      # Documentation for Rechunk is provided on their github repository at https://github.com/hhd-dev/rechunk
-      # - name: Run Rechunker
-      #   id: rechunk
-      #   uses: hhd-dev/rechunk@v1.2.4
-      #   with:
-      #     rechunk: 'ghcr.io/hhd-dev/rechunk:v1.2.4'
-      #     ref: "localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
-      #     prev-ref: "${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
-      #     skip_compression: true
-      #     version: ${{ env.CENTOS_VERSION }}
-      #     labels: ${{ steps.metadata.outputs.labels }} # Rechunk strips out all the labels during build, this needs to be reapplied here with newline separator
-
-      # This is necessary so that the podman socket can find the rechunked image on its storage
-      # - name: Load in podman and tag
-      #   run: |
-      #     IMAGE=$(podman pull ${{ steps.rechunk.outputs.ref }})
-      #     sudo rm -rf ${{ steps.rechunk.outputs.output }}
-      #     for tag in ${{ steps.metadata.outputs.tags }}; do
-      #       podman tag $IMAGE ${{ env.IMAGE_NAME }}:$tag
-      #     done
+      # Splits the image into per-package layers so updates only download what changed.
+      # --previous-build keeps the layer plan stable across builds, but errors on an image that was never chunked.
+      # --rootfs drops labels, so they are reapplied.
+      - name: Rechunk Image
+        env:
+          LABELS: ${{ steps.metadata.outputs.labels }}
+        run: |
+          set -euo pipefail
+          IMAGE="localhost/${IMAGE_NAME}:${DEFAULT_TAG}"
+          GRAPHROOT="$(podman info --format '{{ .Store.GraphRoot }}')"
+          label_args=()
+          while IFS= read -r label; do
+            [[ -n "$label" ]] && label_args+=(--label "$label")
+          done <<< "$LABELS"
+          PREVIOUS="docker://${IMAGE_REGISTRY}/${IMAGE_NAME}:${DEFAULT_TAG}"
+          previous_args=()
+          if skopeo inspect --raw "$PREVIOUS" | jq -e 'any(.layers[]; .annotations["ostree.components"])' > /dev/null; then
+            previous_args=(--previous-build "$PREVIOUS")
+          fi
+          podman run --rm --pull=never --privileged \
+            --mount=type=image,src="${IMAGE}",target=/rpm-ostree \
+            --mount=type=bind,src="${GRAPHROOT}",target=/run/host-container-storage,rw \
+            --mount=type=tmpfs,target=/run/rpm-ostree-storage \
+            --entrypoint /usr/bin/rpm-ostree \
+            "${IMAGE}" \
+            compose build-chunked-oci \
+            --max-layers 128 \
+            --format-version=2 \
+            --bootc \
+            --rootfs /rpm-ostree \
+            "${previous_args[@]}" \
+            "${label_args[@]}" \
+            --output "containers-storage:[overlay@/run/host-container-storage+/run/rpm-ostree-storage]${IMAGE}"
+          for tag in ${{ steps.metadata.outputs.tags }}; do
+            podman tag "${IMAGE}" "localhost/${IMAGE_NAME}:${tag}"
+          done
 
       # These `if` statements are so that pull requests for your custom images do not make it publish any packages under your name without you knowing
       # They also check if the runner is on the default branch so that things like the merge queue (if you enable it), are going to work
-      - name: Login to GitHub Container Registry
+      - name: Login to Quay Container Registry
         uses: docker/login-action@v4
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         with:
@@ -148,16 +162,13 @@ jobs:
         uses: sigstore/cosign-installer@v4.1.2
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         with:
-          cosign-release: "v2.6.3"
+          cosign-release: "v3.1.3"
 
       - name: Sign container image
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         run: |
-          IMAGE_FULL="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}"
-          for tag in ${{ steps.metadata.outputs.tags }}; do
-            cosign sign -y --key env://COSIGN_PRIVATE_KEY $IMAGE_FULL:$tag
-          done
+          cosign sign -y --new-bundle-format=false --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${DIGEST}
         env:
-          TAGS: ${{ steps.push.outputs.digest }}
+          DIGEST: ${{ steps.push.outputs.digest }}
           COSIGN_EXPERIMENTAL: false
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}

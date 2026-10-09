@@ -2,7 +2,7 @@
 
 set -ouex pipefail
 
-mkdir /var/opt /var/roothome
+mkdir /var/roothome
 
 # Add Mullvad VPN repo
 dnf5 config-manager addrepo --from-repofile=https://repository.mullvad.net/rpm/stable/mullvad.repo
@@ -23,10 +23,6 @@ dnf5 install -y \
 	yq \
 	zsh
 
-# Mullvad VPN is installed in /opt which does not persist to the final image, so we move it
-mkdir -p /usr/lib/mullvad
-mv "/opt/Mullvad VPN"/* /usr/lib/mullvad/
-
 # Remove packages I don't use
 dnf5 remove -y \
 	firefox \
@@ -34,6 +30,8 @@ dnf5 remove -y \
 
 
 cp /ctx/cosign.pub /etc/pki/bemain-cosign.pub  # Copy signing key
-rsync -r /ctx/root_files/ /  # Copy root files
+
+# Copied after package installs so packages cannot overwrite these files
+cp -avf "/ctx/system_files"/. /
 
 rm -rf /var/roothome/
