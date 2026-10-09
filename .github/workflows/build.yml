@@ -118,7 +118,11 @@ jobs:
           if skopeo inspect --raw "$PREVIOUS" | jq -e 'any(.layers[]; .annotations["ostree.components"])' > /dev/null; then
             previous_args=(--previous-build "$PREVIOUS")
           fi
+          # The image's own policy.json rejects the oci: transport rpm-ostree writes through
+          POLICY="${RUNNER_TEMP}/policy.json"
+          echo '{"default":[{"type":"insecureAcceptAnything"}]}' > "$POLICY"
           podman run --rm --pull=never --privileged \
+            --mount=type=bind,src="${POLICY}",target=/etc/containers/policy.json,ro \
             --mount=type=image,src="${IMAGE}",target=/rpm-ostree \
             --mount=type=bind,src="${GRAPHROOT}",target=/run/host-container-storage,rw \
             --mount=type=tmpfs,target=/run/rpm-ostree-storage \
