@@ -5,7 +5,7 @@ COPY system_files /system_files
 COPY cosign.pub /cosign.pub
 
 # Base Image
-FROM registry.fedoraproject.org/fedora-silverblue:latest
+FROM registry.fedoraproject.org/fedora-silverblue:45
 
 ## Other possible base images include:
 # FROM ghcr.io/ublue-os/bazzite:latest
