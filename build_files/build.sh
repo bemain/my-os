@@ -26,7 +26,7 @@ dnf5 install -y \
 # Remove packages I don't use
 dnf5 remove -y \
 	firefox \
-    toolbox
+	toolbox
 
 
 cp /ctx/cosign.pub /etc/pki/bemain-cosign.pub  # Copy signing key

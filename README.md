@@ -27,11 +27,11 @@ This file defines the base image and operations used to customize the selected i
 
 ## build_files/build.sh
 
-This bash script is run by the containerfile as part of the build process and does most of the customizations, including installing packages and modifying config files. It also calls out to other scripts in [`build_files/`](/build_files/)
+This bash script is run by the containerfile as part of the build process and does most of the customizations, including installing packages and copying config files into the image.
 
-## build_files/root_files
+## system_files
 
-The contents of [`root_files/`](/build_files/root_files/) is copied into the image.
+The contents of [`system_files/`](/system_files/) is copied into the root of the image after packages are installed.
 
 ## GitHub Actions Workflow
 
